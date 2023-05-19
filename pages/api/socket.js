@@ -16,15 +16,15 @@ function regenerateWord() {
   previous_words.push(word);
 }
 
-function showLeaderboard(socket) {
+function showLeaderboard() {
   regenerateWord()
-  socket.broadcast.emit("begin-timer", 5)
-  socket.broadcast.emit("showcase-word", word)
+  globalSocket.broadcast.emit("begin-timer", 5)
+  globalSocket.broadcast.emit("showcase-word", word)
     timer = 5
     var counter = 0;
     var i = setInterval(function(){
     timer--;
-    socket.broadcast.emit("update-timer", timer)
+    globalSocket.broadcast.emit("update-timer", timer)
       counter++;
       if(counter === 5) {
         clearInterval(i);
@@ -60,7 +60,7 @@ function beginRound() {
         regenerateWord()
         //add timer between rounds where word will be showcased
         //calculate the points of the drawer here
-        showLeaderboard(socket)    
+        showLeaderboard()    
       }
   }, 1000);
 }
