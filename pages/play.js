@@ -22,6 +22,8 @@ function Home() {
   const [color, setColor] = useState('')
   const [brush, setBrush] = useState(2)
   const [myTurn, setMyTurn] = useState(false)
+  const [mysteryWord, setMysteryWord] = useState("")
+  const [showWord, setShowWord] = useState(false)
   const canvas = useRef()
 
   useEffect(() => {
@@ -39,10 +41,6 @@ function Home() {
   const socketInitializer = async () => {
     await fetch('/api/socket')
     socket = io()
-
-    socket.on('connect', () => {
-      console.log('connected')
-    })
 
     socket.on('update-canvas', newCanvas => {
       if (canvas.current.getSaveData() !== newCanvas){
@@ -64,11 +62,18 @@ function Home() {
       setLobby(newLobby)
     })
 
+    socket.on("showcase-word", word => {
+      setMysteryWord(word)
+      setShowWord(true)
+    })
+
+
     socket.on("start-round", currentPlayer => {
       //canvas.current.disabled = true
       canvas.current.clear()
       x = 1;
       index = 0;
+      setShowWord(false)
       setColor(rs[index])
       setBrush(x+1)
       brushS.style.width = size[x];
@@ -96,6 +101,11 @@ function Home() {
 
   return (
     <div className="pt-[3.5rem] bg-blue-400 min-h-screen min-w-screen flex flex-col justify-center overflow-clip">
+      {showWord &&
+      <div className="absolute min-w-full min-h-screen flex justify-center items-center bg-black opacity-75 z-10">
+        <p className="text-white">{"The word was: " + mysteryWord}</p>
+      </div>
+      }
       <div className="flex flex-col items-center justify-center overscroll-contain">
           <CanvasDraw
             ref = {canvas}

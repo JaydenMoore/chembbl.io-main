@@ -8,6 +8,27 @@ var word = questions[Math.floor(Math.random()*questions.length)];
 var previous_words = [word]
 var answered = []
 
+function showLeaderboard() {
+  socket.broadcast.emit("begin-timer", 5)
+  socket.broadcast.emit("showcase-word", word)
+    timer = 5
+    var counter = 0;
+    var i = setInterval(function(){
+    timer--;
+    socket.broadcast.emit("update-timer", timer)
+      counter++;
+      if(counter === 5) {
+        clearInterval(i);
+        beginRound(); 
+      }
+  }, 1000);
+  
+}
+
+function showHint() {
+  
+}
+
 function beginRound() {
   globalSocket.broadcast.emit("start-round", lobby[currentPlayer].username, word)
   globalSocket.broadcast.emit("begin-timer", 60)
@@ -21,7 +42,11 @@ function beginRound() {
       counter++;
       if(counter === 60) { //Make timer disappear when all players answer
         clearInterval(i);
-        currentPlayer++;
+        if ((currentPlayer + 1) == lobby.length){
+          currentPlayer = 0
+        } else {
+          currentPlayer++;
+        }
         word = questions[Math.floor(Math.random()*questions.length)];
         while (word in previous_words) {
           word = questions[Math.floor(Math.random()*questions.length)];
@@ -29,9 +54,9 @@ function beginRound() {
         previous_words.push(word);
         //add timer between rounds where word will be showcased
         //calculate the points of the drawer here
-        beginRound();     
+        showLeaderboard()    
       }
-  }, 1000);
+  }, 100);
 }
 
 const SocketHandler = (req, res) => {
@@ -80,8 +105,6 @@ const SocketHandler = (req, res) => {
             chatLog.push([user + " guessed the prompt!", "text-green-600"])
             for (var player in lobby) {
               if (lobby[player].username == user) {
-                console.log(player)
-                console.log("bruhhh")
                 lobby[player].points += Math.floor(120*((lobby.length - 1) - answered.length)/(lobby.length-1))
                 answered.push(user)
                 socket.broadcast.emit("update-score", lobby)
