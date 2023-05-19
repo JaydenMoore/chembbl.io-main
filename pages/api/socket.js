@@ -1,24 +1,37 @@
 import { Server } from 'socket.io'
+import questions from "./prompts"
+
 var lobby = []
 var currentPlayer = 0
 var globalSocket
+var word = questions[Math.floor(Math.random()*questions.length)];
+var previous_words = [word]
+var answered = []
 
 function beginRound() {
-  globalSocket.broadcast.emit("start-round", lobby[currentPlayer])
+  globalSocket.broadcast.emit("start-round", lobby[currentPlayer].username, word)
   globalSocket.broadcast.emit("begin-timer", 60)
 
   var counter = 0;
   var timer = 60
+  answered = []
   var i = setInterval(function(){
     timer--;
     globalSocket.broadcast.emit("update-timer", timer)
       counter++;
-      if(counter === 60) {
+      if(counter === 60) { //Make timer disappear when all players answer
         clearInterval(i);
         currentPlayer++;
+        word = questions[Math.floor(Math.random()*questions.length)];
+        while (word in previous_words) {
+          word = questions[Math.floor(Math.random()*questions.length)];
+        }
+        previous_words.push(word);
+        //add timer between rounds where word will be showcased
+        //calculate the points of the drawer here
         beginRound();     
       }
-  }, 200);
+  }, 1000);
 }
 
 const SocketHandler = (req, res) => {
@@ -54,8 +67,29 @@ const SocketHandler = (req, res) => {
             }, 100);
           }
         })
-        socket.on('new-msg', msg => {
-          chatLog.push(msg)
+        socket.on('new-msg', (user, chat) => {
+          
+          if (user in answered /*&& !chat.toLowerCase().includes(word.toLowerCase())*/){
+            return
+          }
+          
+          if (user == lobby[currentPlayer] /*&& !chat.toLowerCase().includes(word.toLowerCase())*/){
+            return
+          }
+          if (chat.toLowerCase() == word.toLowerCase()) {
+            chatLog.push([user + " guessed the prompt!", "text-green-600"])
+            for (var player in lobby) {
+              if (lobby[player].username == user) {
+                console.log(player)
+                console.log("bruhhh")
+                lobby[player].points += Math.floor(120*((lobby.length - 1) - answered.length)/(lobby.length-1))
+                answered.push(user)
+                socket.broadcast.emit("update-score", lobby)
+              }
+            }
+          } else {
+            chatLog.push([user + ": " + chat, "text-black"])
+          }
           socket.broadcast.emit('update-chat-log', chatLog)
         })
         socket.on('canvas-change', canvas => {

@@ -29,7 +29,11 @@ const Home = () => {
 
   const addNewUser = (e) => {
     //prevent double click
-    socket.emit("new-player-joined", username)
+    socket.emit("new-player-joined", {
+      "username": username,
+      "points": 0,
+      "rank": 0 
+    })
     localStorage.setItem(
       "user",
       username,

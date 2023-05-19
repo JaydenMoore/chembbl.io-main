@@ -27,7 +27,11 @@ function Home() {
   useEffect(() => {
     if (localStorage.getItem("user")) {
       setUser(localStorage.getItem("user"))
-      setLobby([...lobby, localStorage.getItem("user")])
+      setLobby([...lobby, {
+        "username": localStorage.getItem("user"), 
+        "points": 0,
+        "rank": 0
+      }])
     }
   }, []);
 
@@ -41,7 +45,6 @@ function Home() {
     })
 
     socket.on('update-canvas', newCanvas => {
-      console.log("bruh")
       if (canvas.current.getSaveData() !== newCanvas){
         canvas.current.loadSaveData(newCanvas, true)
       }
@@ -56,9 +59,22 @@ function Home() {
         setChatLog(newChatLog)
       }
     })
+    
+    socket.on("update-score", newLobby => {
+      setLobby(newLobby)
+    })
 
     socket.on("start-round", currentPlayer => {
+      //canvas.current.disabled = true
       canvas.current.clear()
+      x = 1;
+      index = 0;
+      setColor(rs[index])
+      setBrush(x+1)
+      brushS.style.width = size[x];
+      brushS.style.height = size[x];
+      paint.style.backgroundColor = rs[index];
+      
       if (currentPlayer == localStorage.getItem("user")){
         setMyTurn(true)
       } else {
@@ -68,8 +84,7 @@ function Home() {
   }
 
   const onCanvasChange = (e) => {
-    console.log("bruh")
-    if (myTurn && !canvas.current.isDrawing) {
+    if (myTurn && !canvas.current.isDrawing) { //make it so they can only draw every 0.1 seconds
       socket.emit('canvas-change', e.getSaveData())
     }
   }
@@ -139,12 +154,12 @@ function Home() {
         <div className="flex flex-row w-[21.9rem]">
           <div className="basis-1/2 bg-white mt-2 h-[200px] p-2 overflow-x-clip overflow-y-scroll">
           <ul>
-            {lobby.map((player) => <p>{player}</p>)}
+            {lobby.map((player) => <p className="text-sm">{player.username + ": " + player.points}</p>)}
           </ul>
           </div>
           <ul id="chatLogElement" className="basis-1/2 ml-2 bg-white mt-2 h-[200px] overflow-x-clip overflow-y-scroll p-2">
             {
-              chatLog.map((msg) => <p>{msg}</p>)
+              chatLog.map((chat) => <p className={chat[1] + " text-sm"}>{chat[0]}</p>)
             }
           </ul>
         </div>
@@ -159,8 +174,8 @@ function Home() {
             className="focus:ring-1 focus:ring-black focus:outline-none w-[16.9rem] p-2 border-2 rounded-md border-slate-100"
             />
           <button className="bg-green-600 focus:ring-1 focus:ring-black focus:outline-none w-[4.5rem] h-[2.76rem] p-2 border-2 rounded-md border-slate-100 ml-[0.5rem]" onClick={()=>{
-            socket.emit("new-msg", (user + ": " + chat))
-            setChatLog([...chatLog, chat])
+            socket.emit("new-msg", user, chat)
+            setChatLog([...chatLog, [chat, false]])
             setChat("")
           }}>
             <p className= "flex items-center justify-center">GUESS</p>

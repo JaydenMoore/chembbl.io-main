@@ -8,3 +8,4 @@ const questions = ['Bohr model', 'Plum Pudding Model', 'Acid',
     'limiting reactant', 'excess reactant', 'metalic bonding', 
     'valence electrons', 'subatomic particles'];
 
+export default questions
