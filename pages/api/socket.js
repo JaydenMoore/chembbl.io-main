@@ -18,7 +18,6 @@ function regenerateWord() {
 }
 
 function showLeaderboard() {
-  regenerateWord()
   globalSocket.broadcast.emit("begin-timer", 5)
   globalSocket.broadcast.emit("showcase-word", word)
     timer = 5
@@ -29,6 +28,7 @@ function showLeaderboard() {
       counter++;
       if(counter === 5) {
         clearInterval(i);
+        regenerateWord()
         beginRound(); 
       }
   }, 1000);
@@ -40,7 +40,6 @@ function showHint() {
 }
 
 function beginRound() {
-  regenerateWord()
   globalSocket.broadcast.emit("start-round", lobby[currentPlayer].username, word)
   globalSocket.broadcast.emit("begin-timer", 60)
 
@@ -94,6 +93,7 @@ const SocketHandler = (req, res) => {
                 counter++;
                 if(counter === 30) {
                     clearInterval(i);
+                    regenerateWord()
                     beginRound(socket);
                 }
             }, 1000);
