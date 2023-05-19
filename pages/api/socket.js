@@ -7,6 +7,7 @@ var globalSocket
 var word = ""
 var previous_words = [word]
 var answered = []
+var timer = 60
 
 function regenerateWord() {
   word = questions[Math.floor(Math.random()*questions.length)];
@@ -44,7 +45,7 @@ function beginRound() {
   globalSocket.broadcast.emit("begin-timer", 60)
 
   var counter = 0;
-  var timer = 60
+  timer = 60
   answered = []
   var i = setInterval(function(){
     timer--;
