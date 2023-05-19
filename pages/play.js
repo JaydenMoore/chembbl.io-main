@@ -133,10 +133,11 @@ function Home() {
             placeholder="guess here"
             className="focus:ring-1 focus:ring-black focus:outline-none w-[16.9rem] p-2 border-2 rounded-md border-slate-100"
             />
-          <button className="bg-white focus:ring-1 focus:ring-black focus:outline-none w-[4.5rem] h-[2.72rem] p-2 border-2 rounded-md border-slate-100 ml-[0.5rem]" onClick={()=>{
-              <p>guess</p>
-            }}>
-            </button>
+          <button className="bg-green-600 focus:ring-1 focus:ring-black focus:outline-none w-[4.5rem] h-[2.76rem] p-2 border-2 rounded-md border-slate-100 ml-[0.5rem]" onClick={()=>{
+            
+          }}>
+            <p className= "flex items-center justify-center">guess</p>
+          </button>
         </div> 
       </div>
     </div>
