@@ -4,7 +4,7 @@ import questions from "./prompts"
 var lobby = []
 var currentPlayer = 0
 var globalSocket
-var word
+var word = ""
 var previous_words = [word]
 var answered = []
 
@@ -39,6 +39,7 @@ function showHint() {
 }
 
 function beginRound() {
+  regenerateWord()
   globalSocket.broadcast.emit("start-round", lobby[currentPlayer].username, word)
   globalSocket.broadcast.emit("begin-timer", 60)
 
