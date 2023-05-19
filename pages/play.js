@@ -3,7 +3,6 @@ import React, {useState, useRef, useEffect} from "react"
 import Layout from "../components/Layout";
 import Image from "next/image"
 import pen from "../components/assets/pen.png"
-import Player from "../components/Player"
 import eraser from "../components/assets/eraser.png"
 import back from "../components/assets/back.png"
 
@@ -16,11 +15,21 @@ const size = ['3px', '6px', '9px', '12px', '15px'];
 let x = 1;
 
 function Home() {
-  const [chat, setChat] = useState(null)
+  const [user, setUser] = useState("")
+  const [chat, setChat] = useState("")
+  const [chatLog, setChatLog] = useState([])
   const [lobby, setLobby] = useState([])
   const [color, setColor] = useState('')
   const [brush, setBrush] = useState(2)
+  const [myTurn, setMyTurn] = useState(false)
   const canvas = useRef()
+
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      setUser(localStorage.getItem("user"))
+      setLobby([...lobby, localStorage.getItem("user")])
+    }
+  }, []);
 
   useEffect(() => socketInitializer(), [canvas, lobby])
   const socketInitializer = async () => {
@@ -32,23 +41,37 @@ function Home() {
     })
 
     socket.on('update-canvas', newCanvas => {
-        canvas.current.loadSaveData(newCanvas)
+      console.log("bruh")
+      if (canvas.current.getSaveData() !== newCanvas){
+        canvas.current.loadSaveData(newCanvas, true)
+      }
     })
 
     socket.on("add-new-player", newLobby => { //This broke but sorta work
-      socket.emit("confirm-lobby", newLobby)
       setLobby(newLobby)
     })
 
-    socket.on("double-update-lobby", newLobby => {
-      if (lobby !== newLobby) {
-        setLobby(newLobby)
+    socket.on("update-chat-log", newChatLog => {
+      if (chatLog !== newChatLog) {
+        setChatLog(newChatLog)
+      }
+    })
+
+    socket.on("start-round", currentPlayer => {
+      canvas.current.clear()
+      if (currentPlayer == localStorage.getItem("user")){
+        setMyTurn(true)
+      } else {
+        setMyTurn(false)
       }
     })
   }
 
   const onCanvasChange = (e) => {
-    socket.emit('canvas-change', e.getSaveData())
+    console.log("bruh")
+    if (myTurn && !canvas.current.isDrawing) {
+      socket.emit('canvas-change', e.getSaveData())
+    }
   }
 
   const updateChat = (e) => {
@@ -69,7 +92,7 @@ function Home() {
             canvasWidth={350}
             canvasHeight={300}
             brushColor={color}
-            disabled={false}
+            disabled={!myTurn}
             onChange={onCanvasChange}
           />
         <div className="flex w-[21.9rem] mt-2 h-12 bg-white">
@@ -114,14 +137,16 @@ function Home() {
             </button>          
         </div>
         <div className="flex flex-row w-[21.9rem]">
-          <div className="basis-1/2 bg-white mt-2 h-[200px]">
+          <div className="basis-1/2 bg-white mt-2 h-[200px] p-2 overflow-x-clip overflow-y-scroll">
           <ul>
             {lobby.map((player) => <p>{player}</p>)}
           </ul>
           </div>
-          <div className="basis-1/2 ml-2 bg-white mt-2 h-[200px]">
-            <p>CHAT</p>
-          </div>
+          <ul id="chatLogElement" className="basis-1/2 ml-2 bg-white mt-2 h-[200px] overflow-x-clip overflow-y-scroll p-2">
+            {
+              chatLog.map((msg) => <p>{msg}</p>)
+            }
+          </ul>
         </div>
         <div className="py-2 flex items-center justify-center">
           <input
@@ -134,9 +159,11 @@ function Home() {
             className="focus:ring-1 focus:ring-black focus:outline-none w-[16.9rem] p-2 border-2 rounded-md border-slate-100"
             />
           <button className="bg-green-600 focus:ring-1 focus:ring-black focus:outline-none w-[4.5rem] h-[2.76rem] p-2 border-2 rounded-md border-slate-100 ml-[0.5rem]" onClick={()=>{
-            
+            socket.emit("new-msg", (user + ": " + chat))
+            setChatLog([...chatLog, chat])
+            setChat("")
           }}>
-            <p className= "flex items-center justify-center">guess</p>
+            <p className= "flex items-center justify-center">GUESS</p>
           </button>
         </div> 
       </div>

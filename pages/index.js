@@ -28,7 +28,12 @@ const Home = () => {
   }
 
   const addNewUser = (e) => {
+    //prevent double click
     socket.emit("new-player-joined", username)
+    localStorage.setItem(
+      "user",
+      username,
+    );
     router.push("/play")
   }
 
