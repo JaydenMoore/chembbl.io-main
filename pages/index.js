@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import Link from "next/link";
 import { useRouter } from 'next/router';
 
 import { useEffect } from 'react'
 import io from 'socket.io-client'
 let socket
+let loading = false
 
 const Home = () => {
   const router = useRouter()
@@ -29,16 +29,19 @@ const Home = () => {
 
   const addNewUser = (e) => {
     //prevent double click
-    socket.emit("new-player-joined", {
-      "username": username,
-      "points": 0,
-      "rank": 0 
-    })
-    localStorage.setItem(
-      "user",
-      username,
-    );
-    router.push("/play")
+    if (!loading) {
+      loading = true
+      socket.emit("new-player-joined", {
+        "username": username,
+        "points": 0,
+        "rank": 0 
+      })
+      localStorage.setItem(
+        "user",
+        username,
+      );
+      router.push("/play")
+    }
   }
 
   return(

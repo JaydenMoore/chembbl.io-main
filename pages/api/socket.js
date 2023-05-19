@@ -4,11 +4,20 @@ import questions from "./prompts"
 var lobby = []
 var currentPlayer = 0
 var globalSocket
-var word = questions[Math.floor(Math.random()*questions.length)];
+var word
 var previous_words = [word]
 var answered = []
 
-function showLeaderboard() {
+function regenerateWord() {
+  word = questions[Math.floor(Math.random()*questions.length)];
+  while (word in previous_words) {
+    word = questions[Math.floor(Math.random()*questions.length)];
+  }
+  previous_words.push(word);
+}
+
+function showLeaderboard(socket) {
+  regenerateWord()
   socket.broadcast.emit("begin-timer", 5)
   socket.broadcast.emit("showcase-word", word)
     timer = 5
@@ -26,7 +35,7 @@ function showLeaderboard() {
 }
 
 function showHint() {
-  
+
 }
 
 function beginRound() {
@@ -47,16 +56,12 @@ function beginRound() {
         } else {
           currentPlayer++;
         }
-        word = questions[Math.floor(Math.random()*questions.length)];
-        while (word in previous_words) {
-          word = questions[Math.floor(Math.random()*questions.length)];
-        }
-        previous_words.push(word);
+        regenerateWord()
         //add timer between rounds where word will be showcased
         //calculate the points of the drawer here
-        showLeaderboard()    
+        showLeaderboard(socket)    
       }
-  }, 100);
+  }, 1000);
 }
 
 const SocketHandler = (req, res) => {
@@ -89,7 +94,7 @@ const SocketHandler = (req, res) => {
                     clearInterval(i);
                     beginRound(socket);
                 }
-            }, 100);
+            }, 1000);
           }
         })
         socket.on('new-msg', (user, chat) => {
@@ -117,6 +122,12 @@ const SocketHandler = (req, res) => {
         })
         socket.on('canvas-change', canvas => {
           socket.broadcast.emit('update-canvas', canvas)
+        })
+        socket.on('choose-different-word', canvas => {
+          regenerateWord()
+          timer = 60
+          globalSocket.broadcast.emit("start-round", lobby[currentPlayer].username, word)
+          globalSocket.broadcast.emit("begin-timer", 60)
         })
     })
   }
