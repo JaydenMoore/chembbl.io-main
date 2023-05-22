@@ -59,13 +59,14 @@ const Home = () => {
             placeholder="Username"
             className="focus:ring-1 focus:ring-black focus:outline-none w-full p-2 border-2 rounded-md border-slate-100"
             />
-            {/*Change this later*/}
-            {/*<Link href="/play"> */}
             <button 
-              className="mt-6 p-8 bg-green-500 w-full rounded-md drop-shadow-md hover:bg-green-400"
+              className="mt-6 p-2 bg-green-500 w-full rounded-md drop-shadow-md hover:bg-green-400"
               onClick={addNewUser}
             >
                 <p className="text-white font-48">Play!</p>
+            </button>
+            <button className="mt-2 p-2 bg-blue-500 w-full rounded-md drop-shadow-md hover:bg-green-400">
+                <p className="text-white font-48">Settings</p>
             </button>
             {/*</Link>*/}
             {/*<button 

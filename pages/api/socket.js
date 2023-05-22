@@ -79,6 +79,7 @@ const SocketHandler = (req, res) => {
     res.socket.server.io = io
 
     io.on('connection', socket => {
+      socket.broadcast.emit("update-lobby", lobby)
         globalSocket = socket
         socket.on('new-player-joined', player => {
           lobby.push(player)
