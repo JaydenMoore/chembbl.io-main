@@ -26,11 +26,7 @@ function showLeaderboard() {
     timer--;
     globalSocket.broadcast.emit("update-timer", timer)
       counter++;
-      if (counter == 45) {
-        //showHint()
-      } else if (counter == 30) {
-        //showHint()
-      } else if(counter === 5) {
+      if(counter === 5) {
         clearInterval(i);
         regenerateWord()
         beginRound(); 
