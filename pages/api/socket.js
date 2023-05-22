@@ -83,7 +83,6 @@ const SocketHandler = (req, res) => {
         if (lobby.length >= 2 && !waitTimerStarted) {
           socket.broadcast.emit("begin-timer", 30)
           socket.broadcast.emit("update-lobby", lobby)
-          socket.broadcast.emit("update-lobby", lobby)
           timer = 30
           waitTimerStarted = true
           var counter = 0;
