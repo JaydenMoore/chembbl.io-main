@@ -59,10 +59,10 @@ function beginRound() {
         } else {
           currentPlayer++;
         }
-        regenerateWord()
         //add timer between rounds where word will be showcased
         //calculate the points of the drawer here
-        showLeaderboard()    
+        showLeaderboard()   
+        regenerateWord() 
       }
   }, 1000);
 }
@@ -96,7 +96,7 @@ const SocketHandler = (req, res) => {
                 if(counter === 30) {
                     clearInterval(i);
                     regenerateWord()
-                    beginRound(socket);
+                    beginRound();
                 }
             }, 1000);
           }
@@ -126,6 +126,9 @@ const SocketHandler = (req, res) => {
         })
         socket.on('canvas-change', canvas => {
           socket.broadcast.emit('update-canvas', canvas)
+        })
+        socket.on('get-lobby', () => {
+          socket.broadcast.emit('update-lobby', lobby)
         })
         socket.on('choose-different-word', canvas => {
           regenerateWord()

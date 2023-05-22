@@ -42,6 +42,10 @@ function Home() {
     await fetch('/api/socket')
     socket = io()
 
+    socket.on("connect", () => {
+      console.log("connected")
+    })
+
     socket.on('update-canvas', newCanvas => {
       if (canvas.current.getSaveData() !== newCanvas){
         canvas.current.loadSaveData(newCanvas, true)
@@ -49,6 +53,11 @@ function Home() {
     })
 
     socket.on("add-new-player", newLobby => { //This broke but sorta work
+      setLobby(newLobby)
+    })
+
+    socket.on("update-lobby", newLobby => {
+      console.log(newLobby)
       setLobby(newLobby)
     })
 
