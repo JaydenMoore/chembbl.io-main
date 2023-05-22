@@ -1,4 +1,4 @@
-//83 Prompts
+//87 Prompts
 const questions = [
     'Bohr model', 'Plum Pudding Model', 'Acid', 
     "Base", "Intermolecular Forces", "Bent", 
@@ -21,7 +21,8 @@ const questions = [
     "Ionization Energy Trend", "Boyle's Law", "Gay Lussac's Law", "Charles Law",
     "Net Ionic Equation", "Complete Ionic Equation", "Energy Diagram", "Calorimetry",
     "Combustion", "Decomposition", "Synthesis", "Double Replacement", "Single Replacement",
-    "Dimensional Analysis", "Avogadro's Number", "STP", "Enthalpy"
+    "Dimensional Analysis", "Avogadro's Number", "STP", "Enthalpy", "Atom", "Proton", "Neutron",
+    "Electron"
 ];
 
 export default questions

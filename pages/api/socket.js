@@ -26,7 +26,11 @@ function showLeaderboard() {
     timer--;
     globalSocket.broadcast.emit("update-timer", timer)
       counter++;
-      if(counter === 5) {
+      if (counter == 45) {
+        //showHint()
+      } else if (counter == 30) {
+        //showHint()
+      } else if(counter === 5) {
         clearInterval(i);
         regenerateWord()
         beginRound(); 
@@ -35,9 +39,7 @@ function showLeaderboard() {
   
 }
 
-function showHint() {
-
-}
+function showHint() {} //Implement in the future
 
 function beginRound() {
   globalSocket.broadcast.emit("start-round", lobby[currentPlayer].username, word)

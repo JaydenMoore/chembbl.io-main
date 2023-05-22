@@ -79,7 +79,7 @@ const Home = () => {
             <p className="text-center text-xl">How to play</p>
             <ul className="mt-2 px-4">
               <li className="mt-2 text-center">1. &nbsp; When it's your turn, you'll be given a prompt to draw!</li>
-              <li className="mt-2 text-center">2. &nbsp; Try to draw your choosen word! Don't cheat and spell!</li>
+              <li className="mt-2 text-center">2. &nbsp; Try to draw your chosen word! Don't cheat and spell!</li>
               <li className="mt-2 text-center">3. &nbsp; Let other players try to guess your drawn word!</li>
               <li className="mt-2 text-center">4. &nbsp; When it's not your turn, try to guess what other players are drawing!</li>
               <li className="mt-2 text-center">5. &nbsp; Score the most electronegativity points and be crowned the most electronegative atom at the end!</li>

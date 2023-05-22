@@ -35,13 +35,15 @@ function TopBar() {
             <div className="z-50 shadow-lg top-0 right-0 left-0 px-4 py-6 bg-blue-700 fixed text-white flex justify-between align-center">
                 <p className="">{timer}</p>
                 <div className = "flex justify-center">
-                <div>
-                    <button className="p-2 bg-gray-200" onClick={()=>{
-                        socket.emit("choose-different-word")
-                    }}>
-
-                    </button>
-                </div>
+                    {myTurn &&
+                    <div>
+                        <button className="p-2 bg-gray-200 mr-40" onClick={()=>{
+                            socket.emit("choose-different-word")
+                        }}>
+                            <p>Choose new word</p>
+                        </button>
+                    </div>
+                    }
                     <p id="answer" className="text-base">{mysteryWord}</p>
                 </div>
             </div>
