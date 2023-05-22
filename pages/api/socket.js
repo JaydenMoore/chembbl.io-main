@@ -79,7 +79,6 @@ const SocketHandler = (req, res) => {
     res.socket.server.io = io
 
     io.on('connection', socket => {
-      socket.broadcast.emit("update-lobby", lobby)
         globalSocket = socket
         socket.on('new-player-joined', player => {
           lobby.push(player)
@@ -137,6 +136,7 @@ const SocketHandler = (req, res) => {
           globalSocket.broadcast.emit("start-round", lobby[currentPlayer].username, word)
           globalSocket.broadcast.emit("begin-timer", 60)
         })
+        socket.broadcast.emit("update-lobby", lobby)
     })
   }
   res.end()
