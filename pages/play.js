@@ -57,7 +57,6 @@ function Home() {
     })
 
     socket.on("update-lobby", newLobby => {
-      console.log(newLobby)
       setLobby(newLobby)
     })
 

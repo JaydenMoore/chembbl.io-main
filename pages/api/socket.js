@@ -75,7 +75,6 @@ const SocketHandler = (req, res) => {
     res.socket.server.io = io
 
     io.on('connection', socket => {
-      socket.broadcast.emit("update-lobby", lobby)
         globalSocket = socket
         socket.on('new-player-joined', player => {
           lobby.push(player)
@@ -83,6 +82,7 @@ const SocketHandler = (req, res) => {
           
           if (lobby.length >= 2 && !waitTimerStarted) {
             socket.broadcast.emit("begin-timer", 30)
+            socket.broadcast.emit("update-lobby", lobby)
             timer = 30
             waitTimerStarted = true
             var counter = 0;
