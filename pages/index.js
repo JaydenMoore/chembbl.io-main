@@ -34,7 +34,8 @@ const Home = () => {
       socket.emit("new-player-joined", {
         "username": username,
         "points": 0,
-        "rank": 0 
+        "rank": 0,
+        "socket": socket.id
       })
       localStorage.setItem(
         "user",

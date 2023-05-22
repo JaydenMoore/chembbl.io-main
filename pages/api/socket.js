@@ -137,7 +137,7 @@ const SocketHandler = (req, res) => {
           globalSocket.broadcast.emit("start-round", lobby[currentPlayer].username, word)
           globalSocket.broadcast.emit("begin-timer", 60)
         })
-        
+        socket.broadcast.emit("update-lobby", lobby)
     })
   }
   res.end()
