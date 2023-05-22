@@ -75,7 +75,6 @@ function Home() {
       setShowWord(true)
     })
 
-
     socket.on("start-round", currentPlayer => {
       //canvas.current.disabled = true
       canvas.current.clear()
